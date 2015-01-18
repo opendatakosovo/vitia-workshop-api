@@ -19,14 +19,13 @@ def paraqit_komunen(komuna, viti):
     rezultati = collection.aggregate([
       {
         "$match": {
-          "viti": 2013,
-          "city": "vitia"
+          "viti": viti,
+          "city": komuna
         }
       },
       {
         "$group": {
           "_id": {
-            "city": "$city",
             "muaji": {
               "$month": "$dataNenshkrimit"
             }
@@ -42,7 +41,6 @@ def paraqit_komunen(komuna, viti):
       {
          "$project": {
           "muaji": "$_id.muaji",
-          "komuna": "$_id.city",
           "vlera": "$vlera",
           "qmimi": "$qmimi",
           "_id": 0
@@ -92,4 +90,4 @@ def tipi_prokurimit():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0' port=5030)

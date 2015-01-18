@@ -61,5 +61,35 @@ def paraqit_komunen(komuna, viti):
 
     return resp
 
+@app.route('/prokurimi')
+def tipi_prokurimit():
+	rezultati = collection.aggregate([
+			{"$match":{
+				"city": "vitia",
+				"viti": 2013
+			}
+			},
+			{"$group":{
+				"_id":{
+					"tipi": "$tipi"
+				},
+				"shumaProkurimit":{
+					"$sum":"$kontrata.vlera"
+				}
+			}
+
+			},
+			{"$sort": {
+				"_id.tipi":1
+			}},
+			{"$project":{
+				"_id":0,
+				"tipi": "$_id.tipi",
+				"shuma": "$shumaProkurimit"
+			}}
+		])
+	return Response(response=json_util.dumps(rezultati['result']), mimetype='application/json')
+
+
 if __name__ == '__main__':
     app.run(debug=True)
